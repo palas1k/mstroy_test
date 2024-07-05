@@ -19,6 +19,7 @@ class BaseError(KeyError):
 
 class TreeStore:
     def __init__(self, items: list[dict]):
+        self.items = items
         self.tree = {}
         for item in items:
             id = item['id']
@@ -31,12 +32,11 @@ class TreeStore:
                 self.tree[parent]['children'].append(item)
 
     def getAll(self):
-        return self.tree
+        return self.items
 
     def getItem(self, id: int):
         try:
-            item = self.tree[id]
-            return {'id': id, 'parent': item.get('parent', None), 'type': item.get('type', None)}
+            return self.items[id-1]
         except KeyError:
             raise BaseError()
 
@@ -54,11 +54,11 @@ class TreeStore:
                 parent = self.getItem(parent_id)
                 parents.append(parent)
                 parent_id = parent["parent"]
-                return parents
+            return parents
         except KeyError:
             raise BaseError()
 
 
 ts = TreeStore(items)
 
-print(ts.getItem(15))
+# print(ts.getAllParents(7))
